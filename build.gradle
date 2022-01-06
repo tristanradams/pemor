@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 
+java {
+    version = 17
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -24,3 +28,4 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
