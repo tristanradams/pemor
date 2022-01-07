@@ -1,11 +1,39 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/test">Test</router-link>
+    <div v-if="isAuthenticated">
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/about">About</router-link>
+      |
+      <router-link v-on:click="logout" to>Logout</router-link>
+    </div>
+    <div v-else>
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/about">About</router-link>
+      |
+      <router-link to="/login">Login</router-link>
+    </div>
   </div>
   <router-view />
 </template>
+
+<script>
+export default {
+  name: "App",
+  components: {},
+  data() {
+    return {
+      isAuthenticated: this.$store.state.isAuthenticated,
+    };
+  },
+  methods: {
+    logout() {
+      this.$store.commit("logout");
+    },
+  },
+};
+</script>
 
 <style>
 #app {

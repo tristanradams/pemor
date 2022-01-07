@@ -1,25 +1,31 @@
 <template>
-  <div id="login">
-    <h1>Login</h1>
-    <input
-      type="text"
-      name="username"
-      v-model="input.username"
-      placeholder="Username"
-    />
-    <input
-      type="password"
-      name="password"
-      v-model="input.password"
-      placeholder="Password"
-    />
-    <button type="button" v-on:click="login()">Login</button>
+  <div class="login">
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <div>
+      <h1>Login</h1>
+      <input
+        type="text"
+        name="username"
+        v-model="input.username"
+        placeholder="Username"
+      />
+      <input
+        type="text"
+        name="password"
+        v-model="input.password"
+        placeholder="Password"
+      />
+      <button type="button" v-on:click="submit">login</button>
+    </div>
   </div>
 </template>
 
 <script>
+// @ is an alias to /src
+
 export default {
   name: "Login",
+  components: {},
   data() {
     return {
       input: {
@@ -29,20 +35,35 @@ export default {
     };
   },
   methods: {
-    login() {
-      if (this.input.username !== "" && this.input.password !== "") {
-        if (
-          this.input.username === this.$parent.mockAccount.username &&
-          this.input.password === this.$parent.mockAccount.password
-        ) {
-          this.$emit("authenticated", true);
-          this.$router.replace({ name: "secure" });
-        } else {
-          console.log("The username and / or password is incorrect");
-        }
-      } else {
-        console.log("A username and password must be present");
-      }
+    submit() {
+      console.log(
+        "submitting: " + this.input.username + " " + this.input.password
+      );
+      fetch("/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: this.input.username,
+          password: this.input.password,
+        }),
+      })
+        .catch((response) => {
+          console.log(response);
+        })
+        .then((response) => response.status)
+        .then((status) => {
+          if (status === 200) {
+            this.$store.commit("login", this.input.username);
+            console.log(
+              "Changed the isAuthenticated, current state is: " +
+                this.$store.state.isAuthenticated
+            );
+          } else {
+            this.$router.replace({ name: "Home" });
+          }
+        });
     },
   },
 };
